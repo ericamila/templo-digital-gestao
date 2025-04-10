@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,29 +16,31 @@ import Register from "./pages/auth/Register";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/church" element={<Church />} />
-          <Route path="/people" element={<People />} />
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
-          {/* These routes will be added later */}
-          <Route path="/school" element={<Dashboard />} />
-          <Route path="/finance" element={<Dashboard />} />
-          <Route path="/events" element={<Dashboard />} />
-          <Route path="/reports" element={<Dashboard />} />
-          <Route path="/settings" element={<Dashboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/church" element={<Church />} />
+            <Route path="/people" element={<People />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            {/* These routes will be added later */}
+            <Route path="/school" element={<Dashboard />} />
+            <Route path="/finance" element={<Dashboard />} />
+            <Route path="/events" element={<Dashboard />} />
+            <Route path="/reports" element={<Dashboard />} />
+            <Route path="/settings" element={<Dashboard />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </TooltipProvider>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;
