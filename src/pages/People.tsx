@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,67 +22,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Search, MoreVertical, Filter } from 'lucide-react';
-import { useState } from 'react';
+import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
+import { Database } from '@/integrations/supabase/types';
+import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-interface Person {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  memberType: 'member' | 'visitor' | 'leader' | 'pastor';
-  joinDate: string;
-}
+type Member = Database['public']['Tables']['members']['Row'];
 
-const mockPeople: Person[] = [
-  {
-    id: '1',
-    name: 'João Silva',
-    email: 'joao.silva@email.com',
-    phone: '(11) 98765-4321',
-    address: 'Rua das Flores, 123, São Paulo - SP',
-    memberType: 'pastor',
-    joinDate: '10/05/2010',
-  },
-  {
-    id: '2',
-    name: 'Maria Santos',
-    email: 'maria.santos@email.com',
-    phone: '(11) 91234-5678',
-    address: 'Av. Paulista, 1000, São Paulo - SP',
-    memberType: 'leader',
-    joinDate: '15/03/2012',
-  },
-  {
-    id: '3',
-    name: 'Pedro Oliveira',
-    email: 'pedro.oliveira@email.com',
-    phone: '(11) 99876-5432',
-    address: 'Rua Augusta, 500, São Paulo - SP',
-    memberType: 'member',
-    joinDate: '20/07/2015',
-  },
-  {
-    id: '4',
-    name: 'Ana Costa',
-    email: 'ana.costa@email.com',
-    phone: '(11) 95555-4444',
-    address: 'Rua Oscar Freire, 200, São Paulo - SP',
-    memberType: 'member',
-    joinDate: '05/01/2018',
-  },
-  {
-    id: '5',
-    name: 'Lucas Ferreira',
-    email: 'lucas.ferreira@email.com',
-    phone: '(11) 94444-3333',
-    address: 'Rua Consolação, 150, São Paulo - SP',
-    memberType: 'visitor',
-    joinDate: '12/04/2023',
-  },
-];
-
-const getBadgeVariant = (memberType: Person['memberType']) => {
+const getBadgeVariant = (memberType: string) => {
   switch (memberType) {
     case 'pastor':
       return 'default';
@@ -96,7 +44,7 @@ const getBadgeVariant = (memberType: Person['memberType']) => {
   }
 };
 
-const getMemberTypeLabel = (memberType: Person['memberType']) => {
+const getMemberTypeLabel = (memberType: string) => {
   switch (memberType) {
     case 'pastor':
       return 'Pastor';
@@ -120,13 +68,26 @@ const getInitials = (name: string) => {
     .toUpperCase();
 };
 
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return '';
+  try {
+    return format(parseISO(dateStr), 'dd/MM/yyyy', { locale: ptBR });
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 const People = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: members, isLoading } = useSupabaseFetch<Member>({
+    table: 'members',
+    order: { column: 'name', ascending: true }
+  });
   
-  const filteredPeople = mockPeople.filter((person) => 
+  const filteredPeople = members.filter((person) => 
     person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.phone.includes(searchTerm)
+    (person.email && person.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (person.phone && person.phone.includes(searchTerm))
   );
 
   return (
@@ -154,67 +115,73 @@ const People = () => {
           </Button>
         </div>
         
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead className="hidden md:table-cell">Email</TableHead>
-                <TableHead className="hidden md:table-cell">Telefone</TableHead>
-                <TableHead className="hidden lg:table-cell">Endereço</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead className="hidden md:table-cell">Data de Ingresso</TableHead>
-                <TableHead className="w-10"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredPeople.map((person) => (
-                <TableRow key={person.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={`/placeholder.svg`} alt={person.name} />
-                        <AvatarFallback>{getInitials(person.name)}</AvatarFallback>
-                      </Avatar>
-                      <div className="font-medium">{person.name}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">{person.email}</TableCell>
-                  <TableCell className="hidden md:table-cell">{person.phone}</TableCell>
-                  <TableCell className="hidden lg:table-cell max-w-xs truncate">
-                    {person.address}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getBadgeVariant(person.memberType)}>
-                      {getMemberTypeLabel(person.memberType)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">{person.joinDate}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <span className="sr-only">Abrir menu</span>
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          Remover
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-40">
+            <p>Carregando pessoas...</p>
+          </div>
+        ) : (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead className="hidden md:table-cell">Email</TableHead>
+                  <TableHead className="hidden md:table-cell">Telefone</TableHead>
+                  <TableHead className="hidden lg:table-cell">Endereço</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead className="hidden md:table-cell">Data de Ingresso</TableHead>
+                  <TableHead className="w-10"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredPeople.map((person) => (
+                  <TableRow key={person.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={`/placeholder.svg`} alt={person.name} />
+                          <AvatarFallback>{getInitials(person.name)}</AvatarFallback>
+                        </Avatar>
+                        <div className="font-medium">{person.name}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{person.email}</TableCell>
+                    <TableCell className="hidden md:table-cell">{person.phone}</TableCell>
+                    <TableCell className="hidden lg:table-cell max-w-xs truncate">
+                      {person.address}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getBadgeVariant(person.member_type)}>
+                        {getMemberTypeLabel(person.member_type)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{formatDate(person.join_date)}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <span className="sr-only">Abrir menu</span>
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
+                          <DropdownMenuItem>Editar</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive">
+                            Remover
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </MainLayout>
   );

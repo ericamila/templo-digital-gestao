@@ -2,30 +2,23 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
+import { Database } from '@/integrations/supabase/types';
 
-interface MembershipData {
-  month: string;
-  members: number;
-  visitors: number;
-}
-
-const mockData: MembershipData[] = [
-  { month: 'Jan', members: 120, visitors: 20 },
-  { month: 'Fev', members: 132, visitors: 25 },
-  { month: 'Mar', members: 141, visitors: 30 },
-  { month: 'Abr', members: 145, visitors: 28 },
-  { month: 'Mai', members: 158, visitors: 35 },
-  { month: 'Jun', members: 162, visitors: 40 },
-];
+type MembershipStat = Database['public']['Tables']['membership_stats']['Row'];
 
 const MembershipChart = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const { data, isLoading } = useSupabaseFetch<MembershipStat>({
+    table: 'membership_stats',
+    order: { column: 'month', ascending: true }
+  });
   
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) {
+  if (!isMounted || isLoading) {
     return (
       <Card>
         <CardHeader>
@@ -48,7 +41,7 @@ const MembershipChart = () => {
       <CardContent className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={mockData}
+            data={data}
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} />

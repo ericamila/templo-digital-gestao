@@ -2,24 +2,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
+import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
+import { Database } from '@/integrations/supabase/types';
 
-const mockData = [
-  { month: 'Jan', tithes: 5000, offerings: 3000, projects: 1000 },
-  { month: 'Fev', tithes: 4800, offerings: 3200, projects: 1500 },
-  { month: 'Mar', tithes: 5200, offerings: 2800, projects: 2000 },
-  { month: 'Abr', tithes: 5500, offerings: 3500, projects: 1800 },
-  { month: 'Mai', tithes: 6000, offerings: 3300, projects: 2200 },
-  { month: 'Jun', tithes: 5800, offerings: 3700, projects: 2500 },
-];
+type Donation = Database['public']['Tables']['donations']['Row'];
 
 const DonationReport = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const { data, isLoading } = useSupabaseFetch<Donation>({
+    table: 'donations',
+    order: { column: 'month', ascending: true }
+  });
   
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) {
+  if (!isMounted || isLoading) {
     return (
       <Card>
         <CardHeader>
@@ -42,7 +41,7 @@ const DonationReport = () => {
       <CardContent className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            data={mockData}
+            data={data}
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" />

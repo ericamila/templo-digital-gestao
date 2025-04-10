@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      activities: {
+        Row: {
+          description: string
+          id: string
+          timestamp: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          description: string
+          id?: string
+          timestamp?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          description?: string
+          id?: string
+          timestamp?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       alarmes: {
         Row: {
           codigo: string | null
@@ -65,6 +89,48 @@ export type Database = {
         Update: {
           descricao?: string | null
           id?: number
+        }
+        Relationships: []
+      }
+      churches: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          description: string | null
+          email: string | null
+          founded_date: string | null
+          id: string
+          name: string
+          phone: string | null
+          schedule: string | null
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          founded_date?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          schedule?: string | null
+          type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          founded_date?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          schedule?: string | null
+          type?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -172,6 +238,33 @@ export type Database = {
           },
         ]
       }
+      donations: {
+        Row: {
+          created_at: string | null
+          id: string
+          month: string
+          offerings: number
+          projects: number
+          tithes: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          month: string
+          offerings: number
+          projects: number
+          tithes: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          month?: string
+          offerings?: number
+          projects?: number
+          tithes?: number
+        }
+        Relationships: []
+      }
       equipamento: {
         Row: {
           codigo: string | null
@@ -193,6 +286,36 @@ export type Database = {
           foto?: string | null
           id?: string
           tipo?: string | null
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          time: string | null
+          title: string
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          time?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          time?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -278,6 +401,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      members: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          join_date: string | null
+          member_type: string
+          name: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          join_date?: string | null
+          member_type: string
+          name: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          join_date?: string | null
+          member_type?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      membership_stats: {
+        Row: {
+          created_at: string | null
+          id: string
+          members: number
+          month: string
+          visitors: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          members: number
+          month: string
+          visitors: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          members?: number
+          month?: string
+          visitors?: number
+        }
+        Relationships: []
       }
       pessoa_fisica: {
         Row: {
