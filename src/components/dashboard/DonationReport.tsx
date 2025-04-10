@@ -3,9 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
-
-type Donation = Database['public']['Tables']['donations']['Row'];
+import { Donation } from '@/types/supabase';
 
 const DonationReport = () => {
   const [isMounted, setIsMounted] = useState(false);

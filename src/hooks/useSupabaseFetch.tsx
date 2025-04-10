@@ -21,8 +21,9 @@ export function useSupabaseFetch<T>(options: FetchOptions) {
       try {
         setIsLoading(true);
         
+        // Use type assertion to allow any table name
         let query = supabase
-          .from(options.table)
+          .from(options.table as any)
           .select('*');
         
         if (options.column && options.value) {

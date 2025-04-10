@@ -1,13 +1,10 @@
-
 import { Activity, User, DollarSign, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
+import { Activity as ActivityType } from '@/types/supabase';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-type ActivityItem = Database['public']['Tables']['activities']['Row'];
 
 const ActivityIcon = ({ type }: { type: string }) => {
   switch (type) {
@@ -47,7 +44,7 @@ const formatTimeAgo = (timestamp: string) => {
 };
 
 const RecentActivity = () => {
-  const { data, isLoading } = useSupabaseFetch<ActivityItem>({
+  const { data, isLoading } = useSupabaseFetch<ActivityType>({
     table: 'activities',
     order: { column: 'timestamp', ascending: false },
     limit: 5

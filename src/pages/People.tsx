@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -23,11 +22,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Search, MoreVertical, Filter } from 'lucide-react';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
+import { Member } from '@/types/supabase';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-type Member = Database['public']['Tables']['members']['Row'];
 
 const getBadgeVariant = (memberType: string) => {
   switch (memberType) {

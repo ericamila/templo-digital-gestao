@@ -1,13 +1,10 @@
-
 import { Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
+import { Event } from '@/types/supabase';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-type Event = Database['public']['Tables']['events']['Row'];
 
 interface FormattedEvent {
   id: string;

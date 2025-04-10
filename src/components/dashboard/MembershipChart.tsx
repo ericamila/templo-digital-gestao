@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
-
-type MembershipStat = Database['public']['Tables']['membership_stats']['Row'];
+import { MembershipStat } from '@/types/supabase';
 
 const MembershipChart = () => {
   const [isMounted, setIsMounted] = useState(false);

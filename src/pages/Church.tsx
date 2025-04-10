@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Mail, Users, Calendar, Clock, Plus } from 'lucide-react';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Database } from '@/integrations/supabase/types';
+import { Church as ChurchType } from '@/types/supabase';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -42,7 +42,7 @@ const formatDate = (dateStr: string | null) => {
 };
 
 const Church = () => {
-  const { data: churches, isLoading } = useSupabaseFetch<Church>({
+  const { data: churches, isLoading } = useSupabaseFetch<ChurchType>({
     table: 'churches',
     order: { column: 'name', ascending: true }
   });
