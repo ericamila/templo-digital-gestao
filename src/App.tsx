@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Church from "./pages/Church";
 import People from "./pages/People";
+import School from "./pages/School";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -27,10 +28,10 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/church" element={<Church />} />
             <Route path="/people" element={<People />} />
+            <Route path="/school" element={<School />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             {/* These routes will be added later */}
-            <Route path="/school" element={<Dashboard />} />
             <Route path="/finance" element={<Dashboard />} />
             <Route path="/events" element={<Dashboard />} />
             <Route path="/reports" element={<Dashboard />} />

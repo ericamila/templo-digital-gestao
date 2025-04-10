@@ -60,3 +60,71 @@ export interface Activity {
   description: string;
   timestamp: string | null;
 }
+
+export interface SchoolClass {
+  id: string;
+  name: string;
+  description: string | null;
+  teacher_id: string | null;
+  schedule: string | null;
+  room: string | null;
+  max_students: number | null;
+  current_students: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface Student {
+  id: string;
+  member_id: string;
+  class_id: string;
+  enrollment_date: string;
+  attendance_rate: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface Attendance {
+  id: string;
+  class_id: string;
+  student_id: string;
+  date: string;
+  present: boolean;
+  created_at: string | null;
+}
+
+export interface FinancialTransaction {
+  id: string;
+  date: string;
+  category: string;
+  description: string;
+  amount: number;
+  type: 'income' | 'expense';
+  payment_method: string | null;
+  reference_number: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface Budget {
+  id: string;
+  year: number;
+  month: number;
+  category: string;
+  allocated_amount: number;
+  spent_amount: number;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface Report {
+  id: string;
+  title: string;
+  description: string | null;
+  report_type: string;
+  date_range_start: string | null;
+  date_range_end: string | null;
+  created_by: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
