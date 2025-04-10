@@ -77,6 +77,48 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          class_id: string
+          created_at: string | null
+          date: string
+          id: string
+          present: boolean
+          student_id: string
+        }
+        Insert: {
+          class_id: string
+          created_at?: string | null
+          date: string
+          id?: string
+          present?: boolean
+          student_id: string
+        }
+        Update: {
+          class_id?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          present?: boolean
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "school_classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cargo: {
         Row: {
           descricao: string | null
@@ -605,6 +647,98 @@ export type Database = {
             columns: ["raspberry_id"]
             isOneToOne: false
             referencedRelation: "raspberry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      school_classes: {
+        Row: {
+          created_at: string | null
+          current_students: number | null
+          description: string | null
+          id: string
+          max_students: number | null
+          name: string
+          room: string | null
+          schedule: string | null
+          teacher_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_students?: number | null
+          description?: string | null
+          id?: string
+          max_students?: number | null
+          name: string
+          room?: string | null
+          schedule?: string | null
+          teacher_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_students?: number | null
+          description?: string | null
+          id?: string
+          max_students?: number | null
+          name?: string
+          room?: string | null
+          schedule?: string | null
+          teacher_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_classes_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          attendance_rate: number | null
+          class_id: string
+          created_at: string | null
+          enrollment_date: string
+          id: string
+          member_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          attendance_rate?: number | null
+          class_id: string
+          created_at?: string | null
+          enrollment_date?: string
+          id?: string
+          member_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          attendance_rate?: number | null
+          class_id?: string
+          created_at?: string | null
+          enrollment_date?: string
+          id?: string
+          member_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "school_classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
             referencedColumns: ["id"]
           },
         ]
