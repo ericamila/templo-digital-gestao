@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { PostgrestError } from '@supabase/supabase-js';
 
 interface FetchOptions {
   table: string;
@@ -21,23 +22,24 @@ export function useSupabaseFetch<T>(options: FetchOptions) {
       try {
         setIsLoading(true);
         
-        // Create a typesafe query using explicit any to allow dynamic table names
-        let query = supabase
-          .from(options.table)
+        // Use "any" type to bypass TypeScript strict checking for dynamic table names
+        // This is necessary because the table names come from user input
+        const query = supabase
+          .from(options.table as any)
           .select('*');
         
         if (options.column && options.value) {
-          query = query.eq(options.column, options.value);
+          query.eq(options.column, options.value);
         }
         
         if (options.order) {
-          query = query.order(options.order.column, { 
+          query.order(options.order.column, { 
             ascending: options.order.ascending 
           });
         }
         
         if (options.limit) {
-          query = query.limit(options.limit);
+          query.limit(options.limit);
         }
         
         const { data: result, error } = await query;

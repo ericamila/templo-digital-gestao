@@ -11,6 +11,9 @@ import Dashboard from "./pages/Dashboard";
 import Church from "./pages/Church";
 import People from "./pages/People";
 import School from "./pages/School";
+import Events from "./pages/Events";
+import Finance from "./pages/Finance";
+import Reports from "./pages/Reports";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -29,12 +32,11 @@ const App = () => (
             <Route path="/church" element={<Church />} />
             <Route path="/people" element={<People />} />
             <Route path="/school" element={<School />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/finance" element={<Finance />} />
+            <Route path="/reports" element={<Reports />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
-            {/* These routes will be added later */}
-            <Route path="/finance" element={<Dashboard />} />
-            <Route path="/events" element={<Dashboard />} />
-            <Route path="/reports" element={<Dashboard />} />
             <Route path="/settings" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
