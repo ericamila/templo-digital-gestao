@@ -71,17 +71,20 @@ const School = () => {
   const handleCreateClass = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase.from('school_classes').insert([
-        {
-          name: newClass.name,
-          description: newClass.description,
-          teacher_id: newClass.teacher_id || null,
-          room: newClass.room,
-          schedule: newClass.schedule,
-          max_students: newClass.max_students ? parseInt(newClass.max_students) : null,
-          current_students: 0
-        }
-      ]).select();
+      const classData = {
+        name: newClass.name,
+        description: newClass.description,
+        teacher_id: newClass.teacher_id || null,
+        room: newClass.room,
+        schedule: newClass.schedule,
+        max_students: newClass.max_students ? parseInt(newClass.max_students) : null,
+        current_students: 0
+      };
+
+      const { data, error } = await supabase
+        .from('school_classes')
+        .insert([classData])
+        .select();
       
       if (error) throw error;
       
@@ -103,16 +106,19 @@ const School = () => {
   const handleCreateTeacher = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase.from('members').insert([
-        {
-          name: newTeacher.name,
-          email: newTeacher.email,
-          phone: newTeacher.phone,
-          address: newTeacher.address,
-          member_type: 'teacher',
-          join_date: new Date().toISOString().split('T')[0]
-        }
-      ]).select();
+      const teacherData = {
+        name: newTeacher.name,
+        email: newTeacher.email,
+        phone: newTeacher.phone,
+        address: newTeacher.address,
+        member_type: 'teacher',
+        join_date: new Date().toISOString().split('T')[0]
+      };
+
+      const { data, error } = await supabase
+        .from('members')
+        .insert([teacherData])
+        .select();
       
       if (error) throw error;
       
@@ -134,13 +140,16 @@ const School = () => {
   const handleEnrollStudent = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase.from('students').insert([
-        {
-          member_id: newStudent.member_id,
-          class_id: newStudent.class_id,
-          enrollment_date: new Date().toISOString().split('T')[0]
-        }
-      ]).select();
+      const studentData = {
+        member_id: newStudent.member_id,
+        class_id: newStudent.class_id,
+        enrollment_date: new Date().toISOString().split('T')[0]
+      };
+
+      const { data, error } = await supabase
+        .from('students')
+        .insert([studentData])
+        .select();
       
       if (error) throw error;
 

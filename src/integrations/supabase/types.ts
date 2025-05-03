@@ -280,6 +280,41 @@ export type Database = {
           },
         ]
       }
+      documentos: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          relatorio_gestao_id: string | null
+          removido_em: string | null
+          uri: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          relatorio_gestao_id?: string | null
+          removido_em?: string | null
+          uri: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          relatorio_gestao_id?: string | null
+          removido_em?: string | null
+          uri?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_relatorio_gestao_id_fkey"
+            columns: ["relatorio_gestao_id"]
+            isOneToOne: false
+            referencedRelation: "relatorios_gestao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donations: {
         Row: {
           created_at: string | null
@@ -306,6 +341,111 @@ export type Database = {
           tithes?: number
         }
         Relationships: []
+      }
+      emendas_parlamentares: {
+        Row: {
+          ciente: boolean
+          codigo: string
+          created_at: string
+          id: string
+          municipio_id: string | null
+          parlamentar_id: string | null
+          programa_id: string | null
+          removido_em: string | null
+          valor_custeio: number
+          valor_investimento: number
+        }
+        Insert: {
+          ciente?: boolean
+          codigo: string
+          created_at?: string
+          id?: string
+          municipio_id?: string | null
+          parlamentar_id?: string | null
+          programa_id?: string | null
+          removido_em?: string | null
+          valor_custeio?: number
+          valor_investimento?: number
+        }
+        Update: {
+          ciente?: boolean
+          codigo?: string
+          created_at?: string
+          id?: string
+          municipio_id?: string | null
+          parlamentar_id?: string | null
+          programa_id?: string | null
+          removido_em?: string | null
+          valor_custeio?: number
+          valor_investimento?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emendas_parlamentares_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emendas_parlamentares_parlamentar_id_fkey"
+            columns: ["parlamentar_id"]
+            isOneToOne: false
+            referencedRelation: "parlamentares"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emendas_parlamentares_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      empenhos: {
+        Row: {
+          codigo: string
+          created_at: string
+          data: string
+          id: string
+          plano_de_acao_id: string | null
+          processo_sei: string | null
+          removido_em: string | null
+          situacao: string
+          valor: number
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          data: string
+          id?: string
+          plano_de_acao_id?: string | null
+          processo_sei?: string | null
+          removido_em?: string | null
+          situacao: string
+          valor?: number
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          data?: string
+          id?: string
+          plano_de_acao_id?: string | null
+          processo_sei?: string | null
+          removido_em?: string | null
+          situacao?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empenhos_plano_de_acao_id_fkey"
+            columns: ["plano_de_acao_id"]
+            isOneToOne: false
+            referencedRelation: "planos_de_acao"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       equipamento: {
         Row: {
@@ -504,6 +644,54 @@ export type Database = {
         }
         Relationships: []
       }
+      municipios: {
+        Row: {
+          created_at: string
+          estado: string
+          id: string
+          nome: string
+          removido_em: string | null
+        }
+        Insert: {
+          created_at?: string
+          estado: string
+          id?: string
+          nome: string
+          removido_em?: string | null
+        }
+        Update: {
+          created_at?: string
+          estado?: string
+          id?: string
+          nome?: string
+          removido_em?: string | null
+        }
+        Relationships: []
+      }
+      parlamentares: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          partido: string | null
+          removido_em: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          partido?: string | null
+          removido_em?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          partido?: string | null
+          removido_em?: string | null
+        }
+        Relationships: []
+      }
       pessoa_fisica: {
         Row: {
           area_id: number | null
@@ -554,6 +742,122 @@ export type Database = {
           id?: number
           logo?: string | null
           nome?: string
+        }
+        Relationships: []
+      }
+      planos_de_acao: {
+        Row: {
+          codigo: string
+          created_at: string
+          emenda_parlamentar_id: string | null
+          id: string
+          removido_em: string | null
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          emenda_parlamentar_id?: string | null
+          id?: string
+          removido_em?: string | null
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          emenda_parlamentar_id?: string | null
+          id?: string
+          removido_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planos_de_acao_emenda_parlamentar_id_fkey"
+            columns: ["emenda_parlamentar_id"]
+            isOneToOne: false
+            referencedRelation: "emendas_parlamentares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      politicas_publicas: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          removido_em: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          removido_em?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          removido_em?: string | null
+        }
+        Relationships: []
+      }
+      politicas_publicas_planos_de_acao: {
+        Row: {
+          created_at: string
+          id: string
+          plano_de_acao_id: string | null
+          politica_publica_id: string | null
+          removido_em: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plano_de_acao_id?: string | null
+          politica_publica_id?: string | null
+          removido_em?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plano_de_acao_id?: string | null
+          politica_publica_id?: string | null
+          removido_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "politicas_publicas_planos_de_acao_plano_de_acao_id_fkey"
+            columns: ["plano_de_acao_id"]
+            isOneToOne: false
+            referencedRelation: "planos_de_acao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "politicas_publicas_planos_de_acao_politica_publica_id_fkey"
+            columns: ["politica_publica_id"]
+            isOneToOne: false
+            referencedRelation: "politicas_publicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programas: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          removido_em: string | null
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          removido_em?: string | null
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          removido_em?: string | null
         }
         Relationships: []
       }
@@ -647,6 +951,41 @@ export type Database = {
             columns: ["raspberry_id"]
             isOneToOne: false
             referencedRelation: "raspberry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorios_gestao: {
+        Row: {
+          created_at: string
+          descricao: string
+          id: string
+          plano_de_acao_id: string | null
+          removido_em: string | null
+          valor_executado: number
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          id?: string
+          plano_de_acao_id?: string | null
+          removido_em?: string | null
+          valor_executado?: number
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          id?: string
+          plano_de_acao_id?: string | null
+          removido_em?: string | null
+          valor_executado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorios_gestao_plano_de_acao_id_fkey"
+            columns: ["plano_de_acao_id"]
+            isOneToOne: false
+            referencedRelation: "planos_de_acao"
             referencedColumns: ["id"]
           },
         ]
@@ -938,7 +1277,14 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      decrement_class_students: {
+        Args: { class_id: string }
+        Returns: undefined
+      }
+      increment_class_students: {
+        Args: { class_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

@@ -21,9 +21,9 @@ export function useSupabaseFetch<T>(options: FetchOptions) {
       try {
         setIsLoading(true);
         
-        // Use type assertion to allow any table name
+        // Create a typesafe query using explicit any to allow dynamic table names
         let query = supabase
-          .from(options.table as any)
+          .from(options.table)
           .select('*');
         
         if (options.column && options.value) {
