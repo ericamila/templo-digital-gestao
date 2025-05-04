@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,7 +51,7 @@ const ChurchForm: React.FC<ChurchFormProps> = ({ church, onClose, onSuccess }) =
       setIsSubmitting(true);
       
       if (church) {
-        // Update existing church
+        // Update existing church - fix: pass values directly, not as array
         const { error } = await supabase
           .from('churches')
           .update(values)
@@ -62,10 +61,10 @@ const ChurchForm: React.FC<ChurchFormProps> = ({ church, onClose, onSuccess }) =
         
         toast.success('Igreja atualizada com sucesso!');
       } else {
-        // Create new church
+        // Create new church - fix: pass values directly, not as array
         const { error } = await supabase
           .from('churches')
-          .insert([values]);
+          .insert(values);
           
         if (error) throw error;
         

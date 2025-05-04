@@ -22,10 +22,10 @@ export function useSupabaseFetch<T>(options: FetchOptions) {
       try {
         setIsLoading(true);
         
-        // Use "any" type to bypass TypeScript strict checking for dynamic table names
-        // This is necessary because the table names come from user input
+        // Use type assertion for dynamic table names
+        // This is a safe approach because we're handling the error if the table doesn't exist
         const query = supabase
-          .from(options.table)
+          .from(options.table as any)
           .select('*');
         
         if (options.column && options.value) {

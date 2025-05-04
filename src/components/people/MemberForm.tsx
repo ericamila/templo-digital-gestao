@@ -47,7 +47,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ member, onClose, onSuccess }) =
       setIsSubmitting(true);
       
       if (member) {
-        // Update existing member
+        // Update existing member - fix: pass values directly, not as array
         const { error } = await supabase
           .from('members')
           .update(values)
@@ -57,10 +57,10 @@ const MemberForm: React.FC<MemberFormProps> = ({ member, onClose, onSuccess }) =
         
         toast.success('Membro atualizado com sucesso!');
       } else {
-        // Create new member
+        // Create new member - fix: pass values directly, not as array
         const { error } = await supabase
           .from('members')
-          .insert([values]);
+          .insert(values);
           
         if (error) throw error;
         

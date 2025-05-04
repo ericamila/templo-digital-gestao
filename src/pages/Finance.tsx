@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
@@ -12,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { DollarSign, PlusCircle, TrendingUp, TrendingDown, FileChart } from 'lucide-react';
+import { DollarSign, PlusCircle, TrendingUp, TrendingDown, FileHeart } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -745,7 +744,7 @@ const Finance = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center space-y-3 p-6">
-                    <FileChart className="h-8 w-8 text-muted-foreground" />
+                    <FileHeart className="h-8 w-8 text-muted-foreground" />
                     <p>Nenhuma conta registrada no plano de contas</p>
                   </div>
                 )}
