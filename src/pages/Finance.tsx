@@ -1,8 +1,8 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { useSupabaseFetch } from '@/hooks/useSupabaseFetch';
-import { Donation, FinancialTransaction } from '@/types/supabase';
+import { Donation, FinancialTransaction, Account, AccountCategory } from '@/types/supabase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { DollarSign, PlusCircle, TrendingUp, TrendingDown } from 'lucide-react';
+import { DollarSign, PlusCircle, TrendingUp, TrendingDown, FileChart } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -38,6 +38,7 @@ const Finance = () => {
     type: 'income',
     payment_method: '',
     reference_number: '',
+    account_id: ''
   });
 
   // Buscar doações
@@ -50,6 +51,18 @@ const Finance = () => {
   const { data: transactions, isLoading: transactionsLoading } = useSupabaseFetch<FinancialTransaction>({
     table: 'financial_transactions',
     order: { column: 'date', ascending: false }
+  });
+
+  // Buscar categorias de contas
+  const { data: accountCategories, isLoading: categoriesLoading } = useSupabaseFetch<AccountCategory>({
+    table: 'account_categories',
+    order: { column: 'name', ascending: true }
+  });
+
+  // Buscar contas
+  const { data: accounts, isLoading: accountsLoading } = useSupabaseFetch<Account>({
+    table: 'accounts',
+    order: { column: 'code', ascending: true }
   });
 
   // Dados para gráficos
@@ -69,6 +82,16 @@ const Finance = () => {
     .reduce((sum, transaction) => sum + Number(transaction.amount), 0);
 
   const balance = totalIncome - totalExpense;
+
+  // Preparar dados para gráfico por categorias
+  const accountsWithCategory = accounts.map(account => {
+    const category = accountCategories.find(cat => cat.id === account.category_id);
+    return {
+      ...account,
+      categoryName: category?.name || '',
+      categoryType: category?.type || ''
+    };
+  });
 
   // Manipuladores de formulários
   const handleCreateDonation = async (e: React.FormEvent) => {
@@ -121,7 +144,8 @@ const Finance = () => {
         amount: parseFloat(newTransaction.amount) || 0,
         type: newTransaction.type,
         payment_method: newTransaction.payment_method || null,
-        reference_number: newTransaction.reference_number || null
+        reference_number: newTransaction.reference_number || null,
+        account_id: newTransaction.account_id || null
       };
 
       const { error } = await supabase
@@ -139,7 +163,8 @@ const Finance = () => {
         amount: '',
         type: 'income',
         payment_method: '',
-        reference_number: ''
+        reference_number: '',
+        account_id: ''
       });
       
       window.location.reload();
@@ -168,6 +193,13 @@ const Finance = () => {
       'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
     return `${monthNames[parseInt(monthNum) - 1]} de ${year}`;
+  };
+
+  // Função para obter o nome da conta pelo ID
+  const getAccountName = (accountId: string | null) => {
+    if (!accountId) return '-';
+    const account = accounts.find(a => a.id === accountId);
+    return account ? `${account.code} - ${account.name}` : '-';
   };
 
   return (
@@ -298,6 +330,24 @@ const Finance = () => {
                       </div>
                     </div>
                     <div className="grid gap-2">
+                      <Label htmlFor="account_id">Conta</Label>
+                      <Select 
+                        value={newTransaction.account_id} 
+                        onValueChange={(value) => setNewTransaction({...newTransaction, account_id: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma conta" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {accounts.map(account => (
+                            <SelectItem key={account.id} value={account.id}>
+                              {account.code} - {account.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid gap-2">
                       <Label htmlFor="category">Categoria</Label>
                       <Input 
                         id="category" 
@@ -406,10 +456,11 @@ const Finance = () => {
 
         {/* Tabs de Conteúdo */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full md:w-auto grid-cols-3">
+          <TabsList className="grid w-full md:w-auto grid-cols-4">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="donations">Doações</TabsTrigger>
             <TabsTrigger value="transactions">Transações</TabsTrigger>
+            <TabsTrigger value="accounts">Plano de Contas</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview" className="space-y-4 mt-6">
@@ -583,6 +634,7 @@ const Finance = () => {
                         <TableHead>Data</TableHead>
                         <TableHead>Descrição</TableHead>
                         <TableHead>Categoria</TableHead>
+                        <TableHead>Conta</TableHead>
                         <TableHead>Método</TableHead>
                         <TableHead className="text-right">Valor</TableHead>
                         <TableHead>Tipo</TableHead>
@@ -599,6 +651,9 @@ const Finance = () => {
                           </TableCell>
                           <TableCell>
                             {transaction.category}
+                          </TableCell>
+                          <TableCell>
+                            {getAccountName(transaction.account_id)}
                           </TableCell>
                           <TableCell>
                             {transaction.payment_method || '-'}
@@ -625,6 +680,73 @@ const Finance = () => {
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Registrar Nova Transação
                     </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="accounts" className="space-y-4 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Plano de Contas</CardTitle>
+                <CardDescription>
+                  Plano de contas da igreja para gerenciamento financeiro
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {accountsLoading || categoriesLoading ? (
+                  <div className="flex items-center justify-center h-40">
+                    <p>Carregando plano de contas...</p>
+                  </div>
+                ) : accountCategories && accountCategories.length > 0 ? (
+                  <div className="space-y-8">
+                    {accountCategories.map((category) => {
+                      const categoryAccounts = accounts.filter(account => account.category_id === category.id);
+                      
+                      return (
+                        <div key={category.id} className="space-y-4">
+                          <h3 className="text-lg font-semibold">{category.name}</h3>
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Código</TableHead>
+                                <TableHead>Nome</TableHead>
+                                <TableHead>Descrição</TableHead>
+                                <TableHead>Status</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {categoryAccounts.map((account) => (
+                                <TableRow key={account.id}>
+                                  <TableCell className="font-medium">
+                                    {account.code}
+                                  </TableCell>
+                                  <TableCell>
+                                    {account.name}
+                                  </TableCell>
+                                  <TableCell>
+                                    {account.description || '-'}
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                      account.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                    }`}>
+                                      {account.is_active ? 'Ativo' : 'Inativo'}
+                                    </span>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center space-y-3 p-6">
+                    <FileChart className="h-8 w-8 text-muted-foreground" />
+                    <p>Nenhuma conta registrada no plano de contas</p>
                   </div>
                 )}
               </CardContent>

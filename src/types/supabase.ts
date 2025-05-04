@@ -1,4 +1,3 @@
-
 // Custom types for our Supabase tables
 export interface Church {
   id: string;
@@ -102,6 +101,7 @@ export interface FinancialTransaction {
   type: 'income' | 'expense';
   payment_method: string | null;
   reference_number: string | null;
+  account_id: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -127,4 +127,23 @@ export interface Report {
   created_by: string | null;
   created_at: string | null;
   updated_at: string | null;
+}
+
+export interface AccountCategory {
+  id: string;
+  name: string;
+  type: 'income' | 'expense' | 'asset' | 'liability' | 'equity';
+  description: string | null;
+  created_at: string | null;
+}
+
+export interface Account {
+  id: string;
+  category_id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  parent_id: string | null;
+  is_active: boolean;
+  created_at: string | null;
 }
