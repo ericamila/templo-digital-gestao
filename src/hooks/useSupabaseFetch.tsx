@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { PostgrestError } from '@supabase/supabase-js';
 
 interface FetchOptions {
   table: string;
