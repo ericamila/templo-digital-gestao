@@ -52,20 +52,38 @@ const ChurchForm: React.FC<ChurchFormProps> = ({ church, onClose, onSuccess }) =
       setIsSubmitting(true);
       
       if (church) {
-        // Update existing church - fix: pass values directly, not as array
+        // Update existing church - pass values directly, not as array
         const { error } = await supabase
           .from('churches')
-          .update(values)
+          .update({
+            name: values.name, // Ensure name is explicitly defined
+            description: values.description,
+            address: values.address,
+            phone: values.phone,
+            email: values.email,
+            founded_date: values.founded_date,
+            schedule: values.schedule,
+            type: values.type
+          })
           .eq('id', church.id);
           
         if (error) throw error;
         
         toast.success('Igreja atualizada com sucesso!');
       } else {
-        // Create new church - fix: pass values directly, not as array
+        // Create new church - pass values directly, not as array
         const { error } = await supabase
           .from('churches')
-          .insert(values);
+          .insert({
+            name: values.name, // Ensure name is explicitly defined
+            description: values.description,
+            address: values.address,
+            phone: values.phone,
+            email: values.email,
+            founded_date: values.founded_date,
+            schedule: values.schedule,
+            type: values.type
+          });
           
         if (error) throw error;
         

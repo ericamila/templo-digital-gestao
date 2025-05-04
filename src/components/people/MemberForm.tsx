@@ -47,20 +47,34 @@ const MemberForm: React.FC<MemberFormProps> = ({ member, onClose, onSuccess }) =
       setIsSubmitting(true);
       
       if (member) {
-        // Update existing member - fix: pass values directly, not as array
+        // Update existing member - pass values directly with explicit required fields
         const { error } = await supabase
           .from('members')
-          .update(values)
+          .update({
+            name: values.name, // Ensure name is explicitly defined
+            email: values.email,
+            phone: values.phone,
+            address: values.address,
+            member_type: values.member_type, // Ensure member_type is explicitly defined
+            join_date: values.join_date
+          })
           .eq('id', member.id);
           
         if (error) throw error;
         
         toast.success('Membro atualizado com sucesso!');
       } else {
-        // Create new member - fix: pass values directly, not as array
+        // Create new member - pass values directly with explicit required fields
         const { error } = await supabase
           .from('members')
-          .insert(values);
+          .insert({
+            name: values.name, // Ensure name is explicitly defined
+            email: values.email,
+            phone: values.phone,
+            address: values.address,
+            member_type: values.member_type, // Ensure member_type is explicitly defined
+            join_date: values.join_date
+          });
           
         if (error) throw error;
         
